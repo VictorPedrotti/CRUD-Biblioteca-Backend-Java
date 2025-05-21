@@ -9,6 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
@@ -36,7 +38,7 @@ public class ItemPedido {
   @Positive(message = "O valor deve ser maior que zero")
   private BigDecimal precoUnitario;
 
-  @Column(name = "subtotal", precision = 10, scale = 2)
+  @Column(name = "subtotal", precision = 10, scale = 2, nullable = false)
   private BigDecimal subtotal;
 
   @ManyToOne
@@ -46,4 +48,10 @@ public class ItemPedido {
   @ManyToOne
   @JoinColumn(name = "livro_id", nullable = false)
   private Livro livro;
+
+  @PrePersist
+  @PreUpdate
+  private void calcularSubtotal() {
+    this.subtotal = this.precoUnitario.multiply(BigDecimal.valueOf(quantidade));
+  }
 }

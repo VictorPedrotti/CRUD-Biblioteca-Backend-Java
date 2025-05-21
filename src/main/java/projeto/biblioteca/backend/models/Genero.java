@@ -2,6 +2,8 @@ package projeto.biblioteca.backend.models;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,6 +34,7 @@ public class Genero {
   @Size(min = 2, max = 30, message = "Descrição ter entre 2 e 30 caracteres")
   private String descricao;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "genero", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Livro> livros;
 }

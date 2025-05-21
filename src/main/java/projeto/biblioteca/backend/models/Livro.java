@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -66,9 +68,11 @@ public class Livro {
   @JoinColumn(name = "fornecedor_id")
   private Fornecedor fornecedor;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "livro", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Avaliacao> avaliacoes;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "livro", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<ItemPedido> itensPedido;
   

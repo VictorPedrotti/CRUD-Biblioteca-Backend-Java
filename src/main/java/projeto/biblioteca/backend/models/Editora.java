@@ -3,6 +3,8 @@ package projeto.biblioteca.backend.models;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -39,6 +41,7 @@ public class Editora {
   @Past(message = "Data de fundação deve ser uma data no passado")
   private LocalDate dataFundacao;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "editora", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Livro> livros;
 }

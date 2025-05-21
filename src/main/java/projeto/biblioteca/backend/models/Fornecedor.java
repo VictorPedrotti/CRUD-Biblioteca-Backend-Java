@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.hibernate.validator.constraints.br.CNPJ;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -48,6 +50,7 @@ public class Fornecedor {
   @CNPJ(message = "CNPJ inválido")
   private String cnpj;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "fornecedor", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Livro> livros;
 }

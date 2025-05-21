@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.hibernate.validator.constraints.br.CPF;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -48,9 +50,11 @@ public class Cliente {
   @Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "Telefone inválido")
   private String telefone;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Avaliacao> avaliacoes;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Pedido> pedidos;
 }

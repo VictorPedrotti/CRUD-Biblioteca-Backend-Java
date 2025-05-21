@@ -3,6 +3,9 @@ package projeto.biblioteca.backend.models;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -39,6 +42,7 @@ public class Autor {
   @Past(message = "Data de nascimento deve ser uma data no passado")
   private LocalDate nascimento;
 
-  @OneToMany
+  @JsonIgnore
+  @OneToMany(mappedBy = "autor", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private List<Livro> livros;
 }
