@@ -16,10 +16,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,19 +33,15 @@ public class Livro {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotBlank(message = "Título é obrigatório")
-  @Size(min = 2, max = 100, message = "Título deve ter entre 2 e 50 caracteres")
   private String titulo;
 
   @Column(name = "data_publicacao", nullable = false)
   private LocalDate dataPublicacao;
 
   @Column(name = "preco", precision = 10, scale = 2)
-  @Positive(message = "O preço deve ser maior que zero")
   private BigDecimal preco;
 
-  @Column(name = "numero_paginas")
-  @Min(value = 1, message = "O livro ter no mínimo 1 página")
+  @Column(name = "numero_paginas")  
   private Integer numeroPaginas;
 
   @ManyToOne

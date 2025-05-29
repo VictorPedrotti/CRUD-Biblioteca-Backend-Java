@@ -25,7 +25,7 @@ public class EditoraService {
             .toList();
   }
 
-  public Editora buscarEditorPorId(Long id) {
+  public Editora buscarEditoraPorId(Long id) {
     return editoraRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Editora não encontrada com ID: " + id));
   }

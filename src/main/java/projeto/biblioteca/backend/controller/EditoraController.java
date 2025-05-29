@@ -34,7 +34,7 @@ public class EditoraController {
 
   @GetMapping("{id}")
   public ResponseEntity<EditoraResponseDto> buscarEditoraPorId(@PathVariable Long id) {
-    return ResponseEntity.ok(EditoraResponseDto.from(editoraService.buscarEditorPorId(id)));
+    return ResponseEntity.ok(EditoraResponseDto.from(editoraService.buscarEditoraPorId(id)));
   }
 
   @PostMapping
