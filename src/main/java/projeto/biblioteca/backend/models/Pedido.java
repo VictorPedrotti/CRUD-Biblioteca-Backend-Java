@@ -18,7 +18,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,7 +39,6 @@ public class Pedido {
   private LocalDate dataPedido;
 
   @Column(name = "total", precision = 10, scale = 2)
-  @PositiveOrZero(message = "Total deve ser positivo ou zero")
   private BigDecimal total;
 
   @ManyToOne

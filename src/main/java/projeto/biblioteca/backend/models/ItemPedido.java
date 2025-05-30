@@ -12,8 +12,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,11 +29,9 @@ public class ItemPedido {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Min(value = 1, message = "A quantidade deve ser no mínimo 1")
   private Integer quantidade;
 
   @Column(name = "preco_unitario", precision = 10, scale = 2)
-  @Positive(message = "O valor deve ser maior que zero")
   private BigDecimal precoUnitario;
 
   @Column(name = "subtotal", precision = 10, scale = 2, nullable = false)
