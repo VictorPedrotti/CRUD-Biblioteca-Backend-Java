@@ -2,13 +2,13 @@ package projeto.biblioteca.backend.service;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 import projeto.biblioteca.backend.dto.GeneroRequestDto;
 import projeto.biblioteca.backend.dto.GeneroResponseDto;
+import projeto.biblioteca.backend.exceptions.RecursoNaoEncontradoException;
+import projeto.biblioteca.backend.exceptions.ValidacaoDeNegocioException;
 import projeto.biblioteca.backend.models.Genero;
 import projeto.biblioteca.backend.repository.GeneroRepository;
 import projeto.biblioteca.backend.repository.LivroRepository;
@@ -29,7 +29,7 @@ public class GeneroService {
 
   public Genero buscarGeneroPorId(Long id) {
     return generoRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Gênero não encontrado com ID:" +id));
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Gênero não encontrado com ID:" +id));
   }
 
   public Genero criarGenero(GeneroRequestDto dto) {
@@ -39,11 +39,11 @@ public class GeneroService {
   public void deletarGenero(Long id) {
 
     if (!generoRepository.existsById(id)) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Gênero não encontrado com ID:" +id);  
+      throw new RecursoNaoEncontradoException("Gênero não encontrado com ID:" +id);  
     }
 
     if(livroRepository.existsByGeneroId(id)) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "O gênero possui livros cadastrados e não pode ser excluído");
+      throw new ValidacaoDeNegocioException("O gênero possui livros cadastrados e não pode ser excluído");
     }
     
     generoRepository.deleteById(id);
@@ -55,7 +55,7 @@ public class GeneroService {
               genero.setDescricao(dto.descricao());
               return generoRepository.save(genero);
             })
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Gênero não encontrado com ID:" +id));
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Gênero não encontrado com ID:" +id));
   }
   
 }

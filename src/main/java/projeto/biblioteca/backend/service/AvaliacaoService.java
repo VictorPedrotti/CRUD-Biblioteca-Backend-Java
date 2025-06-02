@@ -2,13 +2,12 @@ package projeto.biblioteca.backend.service;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 import projeto.biblioteca.backend.dto.AvaliacaoRequestDto;
 import projeto.biblioteca.backend.dto.AvaliacaoResponseDto;
+import projeto.biblioteca.backend.exceptions.RecursoNaoEncontradoException;
 import projeto.biblioteca.backend.models.Avaliacao;
 import projeto.biblioteca.backend.repository.AvaliacaoRepository;
 
@@ -29,7 +28,7 @@ public class AvaliacaoService {
 
   public Avaliacao buscarAvaliacaoPorId(Long id) {
     return avaliacaoRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Avaliação não encontrada com ID: " +id));  
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Avaliação não encontrada com ID: " +id));  
   }
 
   public Avaliacao criarAvaliacao(AvaliacaoRequestDto dto) {
@@ -44,7 +43,7 @@ public class AvaliacaoService {
   public void deletarAvaliacao(Long id) {
 
     if(!avaliacaoRepository.existsById(id)) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Avaliação não encontrada com ID: " + id);  
+      throw new RecursoNaoEncontradoException("Avaliação não encontrada com ID: " +id);  
     }
     
     avaliacaoRepository.deleteById(id);
@@ -60,6 +59,6 @@ public class AvaliacaoService {
               avaliacao.setLivro(livroService.buscarLivroPorId(dto.livroId()));
               return avaliacaoRepository.save(avaliacao);
             })
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Avaliação não encontrada com ID: " + id));
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Avaliação não encontrada com ID: " +id));
   }
 }

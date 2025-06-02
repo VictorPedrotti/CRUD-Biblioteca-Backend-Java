@@ -2,13 +2,13 @@ package projeto.biblioteca.backend.service;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 import projeto.biblioteca.backend.dto.FornecedorRequestDto;
 import projeto.biblioteca.backend.dto.FornecedorResponseDto;
+import projeto.biblioteca.backend.exceptions.RecursoNaoEncontradoException;
+import projeto.biblioteca.backend.exceptions.ValidacaoDeNegocioException;
 import projeto.biblioteca.backend.models.Fornecedor;
 import projeto.biblioteca.backend.repository.FornecedorRepository;
 import projeto.biblioteca.backend.repository.LivroRepository;
@@ -29,7 +29,7 @@ public class FornecedorService {
 
   public Fornecedor buscarFornecedorPorId(Long id) {
     return fornecedorRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fornecedor não encontrado com ID: " + id));
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Fornecedor não encontrado com ID: " + id));
   }
 
   public Fornecedor criarFornecedor(FornecedorRequestDto dto) {
@@ -39,11 +39,11 @@ public class FornecedorService {
   public void deletarFornecedor(Long id) {
 
     if(!fornecedorRepository.existsById(id)) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fornecedor não encontrado com ID: " + id);  
+      throw new RecursoNaoEncontradoException("Fornecedor não encontrado com ID: " + id);  
     }
 
     if(livroRepository.existsByFornecedorId(id)) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "O fornecedor possui livros cadastrados e não pode ser excluído");
+      throw new ValidacaoDeNegocioException("O fornecedor possui livros cadastrados e não pode ser excluído");
     }
 
     fornecedorRepository.deleteById(id);
@@ -58,6 +58,6 @@ public class FornecedorService {
               fornecedor.setCnpj(dto.cnpj());
               return fornecedorRepository.save(fornecedor);
             })
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fornecedor não encontrado com ID: " + id));
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Fornecedor não encontrado com ID: " + id));
   }
 }

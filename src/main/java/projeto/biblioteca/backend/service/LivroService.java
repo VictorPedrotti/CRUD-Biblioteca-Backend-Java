@@ -2,13 +2,12 @@ package projeto.biblioteca.backend.service;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 import projeto.biblioteca.backend.dto.LivroRequestDto;
 import projeto.biblioteca.backend.dto.LivroResponseDto;
+import projeto.biblioteca.backend.exceptions.RecursoNaoEncontradoException;
 import projeto.biblioteca.backend.models.Livro;
 import projeto.biblioteca.backend.repository.LivroRepository;
 
@@ -31,7 +30,7 @@ public class LivroService {
 
   public Livro buscarLivroPorId(Long id) {
     return livroRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Livro não encontrado com ID: " + id));
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Livro não encontrado com ID: " + id));
   }
 
   public Livro criarLivro(LivroRequestDto dto) {
@@ -48,7 +47,7 @@ public class LivroService {
   public void deletarLivro(Long id) {
 
     if(!livroRepository.existsById(id)) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Livro não encontrado com ID: " + id);  
+      throw new RecursoNaoEncontradoException("Livro não encontrado com ID: " + id);  
     }
 
     livroRepository.deleteById(id);
@@ -67,6 +66,6 @@ public class LivroService {
               livro.setFornecedor(fornecedorService.buscarFornecedorPorId(dto.fornecedorId()));
               return livroRepository.save(livro);
             })
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Livro não encontrado com ID: " + id));
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Livro não encontrado com ID: " + id));
   }
 }

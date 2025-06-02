@@ -2,13 +2,13 @@ package projeto.biblioteca.backend.service;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 import projeto.biblioteca.backend.dto.ClienteRequestDto;
 import projeto.biblioteca.backend.dto.ClienteResponseDto;
+import projeto.biblioteca.backend.exceptions.ValidacaoDeNegocioException;
+import projeto.biblioteca.backend.exceptions.RecursoNaoEncontradoException;
 import projeto.biblioteca.backend.models.Cliente;
 import projeto.biblioteca.backend.repository.AvaliacaoRepository;
 import projeto.biblioteca.backend.repository.ClienteRepository;
@@ -31,7 +31,7 @@ public class ClienteService {
   
   public Cliente buscarClientePorId(Long id) {
     return clienteRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado com ID: " +id));   
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado com ID: " +id));   
   }
 
   public Cliente criarCliente(ClienteRequestDto dto) {
@@ -41,11 +41,11 @@ public class ClienteService {
   public void deletarCliente(Long id) {
 
     if(!clienteRepository.existsById(id)) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado com ID: " +id);
+      throw new RecursoNaoEncontradoException("Cliente não encontrado com ID: " +id);
     }
 
     if(avaliacaoRepository.existsByClienteId(id) || pedidoRepository.existsByClienteId(id)) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "O cliente possui pedidos ou avaliações cadastrados e não pode ser excluído");
+      throw new ValidacaoDeNegocioException("O cliente possui pedidos ou avaliações cadastrados e não pode ser excluído");
     }
 
     clienteRepository.deleteById(id);
@@ -60,7 +60,7 @@ public class ClienteService {
               cliente.setTelefone(dto.telefone());
               return clienteRepository.save(cliente);
             })
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Autor não encontrado com ID: " + id));
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente não encontrado com ID: " +id));
   }
   
 }

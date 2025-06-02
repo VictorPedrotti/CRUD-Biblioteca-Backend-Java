@@ -2,13 +2,13 @@ package projeto.biblioteca.backend.service;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 import projeto.biblioteca.backend.dto.EditoraRequestDto;
 import projeto.biblioteca.backend.dto.EditoraResponseDto;
+import projeto.biblioteca.backend.exceptions.ValidacaoDeNegocioException;
+import projeto.biblioteca.backend.exceptions.RecursoNaoEncontradoException;
 import projeto.biblioteca.backend.models.Editora;
 import projeto.biblioteca.backend.repository.EditoraRepository;
 import projeto.biblioteca.backend.repository.LivroRepository;
@@ -29,7 +29,7 @@ public class EditoraService {
 
   public Editora buscarEditoraPorId(Long id) {
     return editoraRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Editora não encontrada com ID: " + id));
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Editora não encontrada com ID: " + id));
   }
 
   public Editora criarEditora(EditoraRequestDto dto) {
@@ -39,11 +39,11 @@ public class EditoraService {
   public void deletarEditora(Long id) {
 
     if(!editoraRepository.existsById(id)) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Editora não encontrada com ID: " + id); 
+      throw new RecursoNaoEncontradoException("Editora não encontrada com ID: " + id); 
     }
 
     if(livroRepository.existsByEditoraId(id)) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "A editora possui livros cadastrados e não pode ser excluída");
+      throw new ValidacaoDeNegocioException("A editora possui livros cadastrados e não pode ser excluída");
     }
 
     editoraRepository.deleteById(id);
@@ -56,6 +56,6 @@ public class EditoraService {
               editora.setDataFundacao(dto.dataFundacao());
               return editoraRepository.save(editora);
             })
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Editora não encontrada com ID: " + id));
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Editora não encontrada com ID: " + id));
   }
 }

@@ -2,13 +2,12 @@ package projeto.biblioteca.backend.service;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 import projeto.biblioteca.backend.dto.FormaPagamentoRequestDto;
 import projeto.biblioteca.backend.dto.FormaPagamentoResponseDto;
+import projeto.biblioteca.backend.exceptions.RecursoNaoEncontradoException;
 import projeto.biblioteca.backend.models.FormaPagamento;
 import projeto.biblioteca.backend.repository.FormaPagamentoRepository;
 
@@ -27,7 +26,7 @@ public class FormaPagamentoService {
 
   public FormaPagamento buscarFormaPagamentoPorId(Long id) {
     return formaPagamentoRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Forma de pagamento não encontrada com ID: " +id));
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Forma de pagamento não encontrada com ID: " +id));
   }
 
   public FormaPagamento criarFormaPagamento(FormaPagamentoRequestDto dto) {
@@ -37,7 +36,7 @@ public class FormaPagamentoService {
   public void deletarFormaPagamento(Long id) {
 
     if(!formaPagamentoRepository.existsById(id)) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Forma de pagamento não encontrada com ID: " +id);  
+      throw new RecursoNaoEncontradoException("Forma de pagamento não encontrada com ID: " +id);  
     }
 
     formaPagamentoRepository.deleteById(id);
@@ -49,7 +48,7 @@ public class FormaPagamentoService {
               formaPagamento.setDescricao(dto.descricao());
               return formaPagamentoRepository.save(formaPagamento);
             })
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Forma de pagamento não encontrada com ID: " +id));
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Forma de pagamento não encontrada com ID: " +id));
   }
   
 }

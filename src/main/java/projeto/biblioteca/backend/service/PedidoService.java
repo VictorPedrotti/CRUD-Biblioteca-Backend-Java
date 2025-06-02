@@ -4,14 +4,13 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
 import projeto.biblioteca.backend.dto.ItemPedidoRequestDto;
 import projeto.biblioteca.backend.dto.PedidoRequestDto;
 import projeto.biblioteca.backend.dto.PedidoResponseDto;
+import projeto.biblioteca.backend.exceptions.RecursoNaoEncontradoException;
 import projeto.biblioteca.backend.models.ItemPedido;
 import projeto.biblioteca.backend.models.Pedido;
 import projeto.biblioteca.backend.repository.PedidoRepository;
@@ -34,7 +33,7 @@ public class PedidoService {
 
   public Pedido buscarPedidoPorId(Long id) {
     return pedidoRepository.findById(id)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido não encontrado com ID: " + id));
+        .orElseThrow(() -> new RecursoNaoEncontradoException("Pedido não encontrado com ID: " + id));
   }
 
   public Pedido criarPedido(PedidoRequestDto dto) {
@@ -75,7 +74,7 @@ public class PedidoService {
   public void deletarPedido(Long id) {
 
     if (!pedidoRepository.existsById(id)) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido não encontrado com ID: " + id);
+      throw new RecursoNaoEncontradoException("Pedido não encontrado com ID: " + id);
     }
 
     pedidoRepository.deleteById(id);
