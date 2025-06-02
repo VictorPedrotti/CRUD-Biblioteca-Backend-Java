@@ -15,8 +15,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,12 +50,4 @@ public class Pedido {
   @JsonIgnore
   @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<ItemPedido> itensPedidos;
-
-  @PrePersist
-  @PreUpdate
-  private void calcularTotal() {
-    this.total = itensPedidos.stream()
-        .map(ItemPedido::getSubtotal)
-        .reduce(BigDecimal.ZERO, BigDecimal::add);
-  }
 }

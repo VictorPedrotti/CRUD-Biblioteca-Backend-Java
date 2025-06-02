@@ -21,7 +21,7 @@ import projeto.biblioteca.backend.models.Avaliacao;
 import projeto.biblioteca.backend.service.AvaliacaoService;
 
 @RestController
-@RequestMapping("{/api/avaliacoes}")
+@RequestMapping("/api/avaliacoes")
 @RequiredArgsConstructor
 public class AvaliacaoController {
   

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,9 +23,9 @@ import projeto.biblioteca.backend.models.Pedido;
 import projeto.biblioteca.backend.service.PedidoService;
 
 @RestController
-@RequestMapping("{/api/pedidos}")
+@RequestMapping("/api/pedidos")
 @RequiredArgsConstructor
-public class ControllerService {
+public class PedidoController {
   
   private final PedidoService pedidoService;
 
@@ -52,5 +53,11 @@ public class ControllerService {
   @PatchMapping("{id}")
   public ResponseEntity<PedidoResponseDto> atualizarItensPedido(@PathVariable Long id, @RequestBody @Valid AtualizacaoItensPedidoDto dto) {
     return ResponseEntity.ok(PedidoResponseDto.from(pedidoService.atualizarItensPedido(id, dto.itens())));
+  }
+
+  @DeleteMapping("{id}")
+  public ResponseEntity<Void> deletarAvaliacao(@PathVariable Long id) {
+    pedidoService.deletarPedido(id);
+    return ResponseEntity.noContent().build();
   }
 }

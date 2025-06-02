@@ -1,5 +1,6 @@
 package projeto.biblioteca.backend.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import projeto.biblioteca.backend.repository.PedidoRepository;
 @Service
 @RequiredArgsConstructor
 public class PedidoService {
-  
+
   private final PedidoRepository pedidoRepository;
   private final ClienteService clienteService;
   private final FormaPagamentoService formaPagamentoService;
@@ -26,14 +27,14 @@ public class PedidoService {
 
   public List<PedidoResponseDto> listarPedidos() {
     return pedidoRepository.findAll()
-            .stream()
-            .map(PedidoResponseDto::from)
-            .toList();
+        .stream()
+        .map(PedidoResponseDto::from)
+        .toList();
   }
 
   public Pedido buscarPedidoPorId(Long id) {
     return pedidoRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido não encontrado com ID: " +id));
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido não encontrado com ID: " + id));
   }
 
   public Pedido criarPedido(PedidoRequestDto dto) {
@@ -48,25 +49,39 @@ public class PedidoService {
           ItemPedido item = itemDto.toEntity();
           item.setLivro(livroService.buscarLivroPorId(itemDto.livroId()));
           item.setPedido(pedido);
+
+          if (item.getPrecoUnitario() != null && item.getQuantidade() != null) {
+            item.setSubtotal(item.getPrecoUnitario().multiply(BigDecimal.valueOf(item.getQuantidade())));
+          } else {
+            item.setSubtotal(BigDecimal.ZERO);
+          }
+
           return item;
         })
         .toList();
-    
+
     pedido.setItensPedidos(itens);
+
+    BigDecimal total = itens.stream()
+        .map(ItemPedido::getSubtotal)
+        .filter(sub -> sub != null)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    pedido.setTotal(total);
 
     return pedidoRepository.save(pedido);
   }
 
   public void deletarPedido(Long id) {
-    
-    if(!pedidoRepository.existsById(id)) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido não encontrado com ID: " + id); 
+
+    if (!pedidoRepository.existsById(id)) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido não encontrado com ID: " + id);
     }
 
     pedidoRepository.deleteById(id);
   }
 
-  // Atualiza o pedido por completo - método PUT 
+  // Atualiza o pedido por completo - método PUT
   public Pedido atualizarPedido(Long id, PedidoRequestDto dto) {
     Pedido pedido = buscarPedidoPorId(id);
 
@@ -76,22 +91,36 @@ public class PedidoService {
 
     List<ItemPedido> novosItens = dto.itens().stream()
         .map(itemDto -> {
-              ItemPedido item = itemDto.toEntity();
-              item.setLivro(livroService.buscarLivroPorId(itemDto.livroId()));
-              item.setPedido(pedido);
-              return item;
-            })
-            .toList();
+          ItemPedido item = itemDto.toEntity();
+          item.setLivro(livroService.buscarLivroPorId(itemDto.livroId()));
+          item.setPedido(pedido);
+
+          if (item.getPrecoUnitario() != null && item.getQuantidade() != null) {
+            item.setSubtotal(item.getPrecoUnitario().multiply(BigDecimal.valueOf(item.getQuantidade())));
+          } else {
+            item.setSubtotal(BigDecimal.ZERO);
+          }
+
+          return item;
+        })
+        .toList();
 
     pedido.getItensPedidos().addAll(novosItens);
 
+    BigDecimal total = novosItens.stream()
+        .map(ItemPedido::getSubtotal)
+        .filter(sub -> sub != null)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    pedido.setTotal(total);
+
     return pedidoRepository.save(pedido);
   }
-  
-  //Atualiza apenas os itens do pedido - método PATCH
+
+  // Atualiza apenas os itens do pedido - método PATCH
   public Pedido atualizarItensPedido(Long id, List<ItemPedidoRequestDto> novosItensDto) {
     Pedido pedido = buscarPedidoPorId(id);
-    
+
     pedido.getItensPedidos().clear();
 
     List<ItemPedido> novosItens = novosItensDto.stream()
@@ -99,11 +128,25 @@ public class PedidoService {
           ItemPedido item = itemDto.toEntity();
           item.setLivro(livroService.buscarLivroPorId(itemDto.livroId()));
           item.setPedido(pedido);
+
+          if (item.getPrecoUnitario() != null && item.getQuantidade() != null) {
+            item.setSubtotal(item.getPrecoUnitario().multiply(BigDecimal.valueOf(item.getQuantidade())));
+          } else {
+              item.setSubtotal(BigDecimal.ZERO);
+          }
+
           return item;
         })
         .toList();
 
     pedido.getItensPedidos().addAll(novosItens);
+
+    BigDecimal total = novosItens.stream()
+        .map(ItemPedido::getSubtotal)
+        .filter(sub -> sub != null)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    pedido.setTotal(total);
 
     return pedidoRepository.save(pedido);
   }
