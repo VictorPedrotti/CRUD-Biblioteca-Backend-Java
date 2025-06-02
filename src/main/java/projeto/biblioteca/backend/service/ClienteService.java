@@ -10,13 +10,17 @@ import lombok.RequiredArgsConstructor;
 import projeto.biblioteca.backend.dto.ClienteRequestDto;
 import projeto.biblioteca.backend.dto.ClienteResponseDto;
 import projeto.biblioteca.backend.models.Cliente;
+import projeto.biblioteca.backend.repository.AvaliacaoRepository;
 import projeto.biblioteca.backend.repository.ClienteRepository;
+import projeto.biblioteca.backend.repository.PedidoRepository;
 
 @Service
 @RequiredArgsConstructor
 public class ClienteService {
   
   private final ClienteRepository clienteRepository;
+  private final PedidoRepository pedidoRepository;
+  private final AvaliacaoRepository avaliacaoRepository;
 
   public List<ClienteResponseDto> listarClientes() {
     return clienteRepository.findAll()
@@ -38,6 +42,10 @@ public class ClienteService {
 
     if(!clienteRepository.existsById(id)) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado com ID: " +id);
+    }
+
+    if(avaliacaoRepository.existsByClienteId(id) || pedidoRepository.existsByClienteId(id)) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "O cliente possui pedidos ou avaliações cadastrados e não pode ser excluído");
     }
 
     clienteRepository.deleteById(id);

@@ -7,5 +7,5 @@ import projeto.biblioteca.backend.models.Avaliacao;
 
 @Repository
 public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Long>{
-
+  boolean existsByClienteId(Long clienteId);
 }

@@ -7,5 +7,5 @@ import projeto.biblioteca.backend.models.Pedido;
 
 @Repository
 public interface PedidoRepository extends JpaRepository<Pedido, Long>{
-
+  boolean existsByClienteId(Long clienteId);
 }

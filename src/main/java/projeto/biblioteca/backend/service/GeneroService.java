@@ -11,12 +11,14 @@ import projeto.biblioteca.backend.dto.GeneroRequestDto;
 import projeto.biblioteca.backend.dto.GeneroResponseDto;
 import projeto.biblioteca.backend.models.Genero;
 import projeto.biblioteca.backend.repository.GeneroRepository;
+import projeto.biblioteca.backend.repository.LivroRepository;
 
 @Service
 @RequiredArgsConstructor
 public class GeneroService {
 
   private final GeneroRepository generoRepository;
+  private final LivroRepository livroRepository;
 
   public List<GeneroResponseDto> listarGeneros() {
     return generoRepository.findAll()
@@ -38,6 +40,10 @@ public class GeneroService {
 
     if (!generoRepository.existsById(id)) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Gênero não encontrado com ID:" +id);  
+    }
+
+    if(livroRepository.existsByGeneroId(id)) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "O gênero possui livros cadastrados e não pode ser excluído");
     }
     
     generoRepository.deleteById(id);

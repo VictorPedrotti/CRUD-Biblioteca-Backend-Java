@@ -11,12 +11,14 @@ import projeto.biblioteca.backend.dto.FornecedorRequestDto;
 import projeto.biblioteca.backend.dto.FornecedorResponseDto;
 import projeto.biblioteca.backend.models.Fornecedor;
 import projeto.biblioteca.backend.repository.FornecedorRepository;
+import projeto.biblioteca.backend.repository.LivroRepository;
 
 @Service
 @RequiredArgsConstructor
 public class FornecedorService {
   
   private final FornecedorRepository fornecedorRepository;
+  private final LivroRepository livroRepository;
 
   public List<FornecedorResponseDto> listarFornecedores() {
     return fornecedorRepository.findAll()
@@ -38,6 +40,10 @@ public class FornecedorService {
 
     if(!fornecedorRepository.existsById(id)) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fornecedor não encontrado com ID: " + id);  
+    }
+
+    if(livroRepository.existsByFornecedorId(id)) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "O fornecedor possui livros cadastrados e não pode ser excluído");
     }
 
     fornecedorRepository.deleteById(id);

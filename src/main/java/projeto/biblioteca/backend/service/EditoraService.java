@@ -11,12 +11,14 @@ import projeto.biblioteca.backend.dto.EditoraRequestDto;
 import projeto.biblioteca.backend.dto.EditoraResponseDto;
 import projeto.biblioteca.backend.models.Editora;
 import projeto.biblioteca.backend.repository.EditoraRepository;
+import projeto.biblioteca.backend.repository.LivroRepository;
 
 @Service
 @RequiredArgsConstructor
 public class EditoraService {
 
   private final EditoraRepository editoraRepository;
+  private final LivroRepository livroRepository;
   
   public List<EditoraResponseDto> listarEditoras() {
     return editoraRepository.findAll()
@@ -38,6 +40,10 @@ public class EditoraService {
 
     if(!editoraRepository.existsById(id)) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Editora não encontrada com ID: " + id); 
+    }
+
+    if(livroRepository.existsByEditoraId(id)) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "A editora possui livros cadastrados e não pode ser excluída");
     }
 
     editoraRepository.deleteById(id);
