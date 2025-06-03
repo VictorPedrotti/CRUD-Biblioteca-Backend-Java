@@ -26,7 +26,7 @@ Um sistema backend para gerenciamento de biblioteca desenvolvido em Java com Spr
 - Docker
 
 ## 📂 Estrutura do Projeto
-
+```
 src/
 ├── main/
 │   ├── java/
@@ -44,7 +44,7 @@ src/
 │       ├── templates/
 │       └── application.properties # Configurações
 ├── test/                          # Testes unitários e de integração (a desenvolver)
-
+```
 ## 📘 Endpoints
 
 Documentação disponível via Swagger: 
@@ -59,4 +59,6 @@ http://localhost:8080/swagger-ui.html
 
 2. Configure o banco de dados no arquivo application.properties
 
-3. ./mvnw spring-boot:run
+3. Execute o projeto:
+   ```bash
+   ./mvnw spring-boot:run
