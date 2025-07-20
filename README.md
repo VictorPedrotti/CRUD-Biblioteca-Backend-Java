@@ -2,7 +2,6 @@
 
 [![Java](https://img.shields.io/badge/Java-17-blue.svg)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.5-green.svg)](https://spring.io/projects/spring-boot)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Um sistema backend para gerenciamento de biblioteca desenvolvido em Java com Spring Boot, implementando operações CRUD completas.
 
